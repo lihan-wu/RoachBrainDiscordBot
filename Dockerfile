@@ -7,4 +7,4 @@ RUN python -m pip install -U requests
 RUN python -m pip install -U python-dotenv
 
 
-CMD ["python", "./discord_bot.py", "--host=0.0.0.0:"]
+CMD ["python", "./roach_brain.py", "--host=0.0.0.0:"]
