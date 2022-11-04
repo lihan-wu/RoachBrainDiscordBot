@@ -51,7 +51,7 @@ game_mode_list = [
 	 "Captains Draft",
 	 "Balanced Draft",
 	 "Ability Draft",
-	 "Event",
+	 "Diretide",
 	 "All Random Deathmatch",
 	 "1v1 Solo Mid",
 	 "All Draft",
@@ -69,7 +69,10 @@ lobby_type_list = [
 	 "Ranked Solo MM (Legacy)",
 	 "Ranked",
 	 "1v1 Mid",
-	 "Battle Cup"
+	 "Battle Cup",
+     "?",
+     "?",
+     "Event"
 ]
 
 rank_list = {
