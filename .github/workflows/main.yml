@@ -35,7 +35,9 @@ jobs:
       - name: pull
         run: docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/docker_repo:latest
 
-      - name: run
+      - name: stop-containers
         run: docker stop $(docker ps -a -q)
-
+      
+      - name: run
+        run: docker run -d -p 80:80 -e discord_api_key=${{ secrets.DISCORD_BOT_API_KEY }} lihanwu/docker_repo:latest
 
