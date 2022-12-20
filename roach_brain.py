@@ -293,6 +293,6 @@ async def recent(ctx, arg): # Since all players were basically the same function
 
     await ctx.send(embed=embed)
 
-discord_api_key = os.getenv('DISCORD_BOT_TOKEN')
+discord_api_key = os.getenv('discord_api_key')
 
 bot.run(discord_api_key)
