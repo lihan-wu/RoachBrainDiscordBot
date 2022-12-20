@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM python:alpine3.17
 
 COPY . .
 
