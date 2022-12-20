@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ main ]
 jobs:
-  build:
+  checkout and build:
     runs-on: self-hosted
     steps:
       
@@ -29,5 +29,12 @@ jobs:
           file: ./Dockerfile
           push: True
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/docker_repo:latest
+  pull and run :
+    steps:
+      - name: pull
+        run: docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/docker_repo:latest
 
+      - name: run
+        run: docker stop $(docker ps -a -q)
+        run: docker run -d -p 80:80 -e discord_api_key=${{ secrets.DISCORD_BOT_API_KEY }} lihanwu/docker_repo:latest
 
