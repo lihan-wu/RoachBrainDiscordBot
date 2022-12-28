@@ -47,4 +47,3 @@ jobs:
       
       - name: run
         run: docker run -d -p 80:80 -e discord_api_key=${{ secrets.DISCORD_BOT_API_KEY }} lihanwu/docker_repo:latest
-
