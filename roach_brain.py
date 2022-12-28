@@ -304,7 +304,7 @@ async def create_party(ctx):
     print(ctx)
     party_members.clear()
     party_members.append(ctx.author.display_name)
-    await ctx.send(f'{ctx.author.mention} <@&620867662456553482> has created a new party')
+    await ctx.send(f'<@&620867662456553482> {ctx.author.mention} has created a new party')
     await ctx.send(f'Members: {", ".join(party_members)}')
 
 @bot.command(name='join')
