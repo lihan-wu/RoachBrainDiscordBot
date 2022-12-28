@@ -293,6 +293,76 @@ async def recent(ctx, arg): # Since all players were basically the same function
 
     await ctx.send(embed=embed)
 
+
+global party_members
+party_members = []
+
+@bot.command(name='party')
+async def create_party(ctx):
+
+    # clears the party and adds the caller to the party
+    print(ctx)
+    party_members.clear()
+    party_members.append(ctx.author.display_name)
+    await ctx.send(f'{ctx.author.mention} <@&620867662456553482> has created a new party')
+    await ctx.send(f'Members: {", ".join(party_members)}')
+
+@bot.command(name='join')
+async def join_party(ctx):
+
+    # check if user is in the party and sends an error if they are
+    if ctx.author.display_name in party_members:
+        await ctx.send(f'{ctx.author.mention} is already in the party')
+        return
+
+
+    # if ther is no party, send an error
+    if len(party_members) == 0:
+        await ctx.send(f'{ctx.author.mention} no party has been started. you can start a party with the $party command')
+        return
+
+
+    # if the party is full, send an error message 
+    if len(party_members) == 5:
+        await ctx.send(f'party is full.')
+        await ctx.send(f'Members: {", ".join(party_members)}')
+        return
+
+
+    # add member to the party and send a message
+    party_members.append(ctx.author.display_name)
+    await ctx.send(f'{ctx.author.mention} has joined the party')
+
+
+    # some various messages at certain party sizes
+    if len(party_members) == 4:
+        await ctx.send(f'<@&620867662456553482> need one more for a five stack')
+
+    if len(party_members) == 5:
+        await ctx.send(f'five stack time let\'s go. please remember to pick stuns')
+
+
+    # print the names of all members in the party
+    await ctx.send(f'Members: {", ".join(party_members)}')
+
+
+
+@bot.command(name='leave')
+async def leave_party(ctx):
+
+    # find the party that the user is a member of
+    if ctx.author.display_name in party_members:
+        party_members.remove(ctx.author.display_name)
+        await ctx.send(f'{ctx.author.mention} left the party')
+        await ctx.send(f'Members: {", ".join(party_members)}')
+        
+
+    # if the user is not a member of any party, send an error message
+    if len(party_members) == 0:
+        await ctx.send(f'party is empty. you can start one with the $party command')
+        return
+
+
 discord_api_key = os.getenv('discord_api_key')
 
 bot.run(discord_api_key)
