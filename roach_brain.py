@@ -304,7 +304,7 @@ async def create_party(ctx):
     print(ctx)
     party_members.clear()
     party_members.append(ctx.author.display_name)
-    await ctx.send(f'<@&620867662456553482> {ctx.author.mention} has created a new party')
+    await ctx.send(f'<@&620867662456553482> {ctx.author.mention} started a party')
     await ctx.send(f'Members: {", ".join(party_members)}')
 
 @bot.command(name='join')
@@ -331,7 +331,7 @@ async def join_party(ctx):
 
     # add member to the party and send a message
     party_members.append(ctx.author.display_name)
-    await ctx.send(f'{ctx.author.mention} has joined the party')
+    await ctx.send(f'{ctx.author.mention} joined the party')
 
 
     # some various messages at certain party sizes
@@ -339,7 +339,7 @@ async def join_party(ctx):
         await ctx.send(f'<@&620867662456553482> need one more for a five stack')
 
     if len(party_members) == 5:
-        await ctx.send(f'five stack time let\'s go. please remember to pick stuns')
+        await ctx.send(f'five stack time let\'s go. don\'t let luke random')
 
 
     # print the names of all members in the party
