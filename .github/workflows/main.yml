@@ -30,6 +30,7 @@ jobs:
           push: True
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/docker_repo:latest
   pull-and-run :
+    needs: checkout-and-build
     runs-on: self-hosted
     steps:
     
