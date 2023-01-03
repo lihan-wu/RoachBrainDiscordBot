@@ -15,6 +15,7 @@ Example: $recent roach
 
 $party
 creates a party and adds the caller to the party
+optional: can pass in an arguement to display when you are going to play. arguement must be entered without spaces (example: $party 30min OR $party @7pm)
 
 $join
 adds the callers name to the party list

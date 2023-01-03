@@ -301,13 +301,17 @@ global party_members
 party_members = []
 
 @bot.command(name='party')
-async def create_party(ctx):
+async def create_party(ctx, time=None, gamemode=None):
 
     # clears the party and adds the caller to the party
-    print(ctx)
     party_members.clear()
     party_members.append(ctx.author.display_name)
-    await ctx.send(f'<@&620867662456553482> {ctx.author.mention} started a party')
+    if time == None:
+        await ctx.send(f'<@&620867662456553482> {ctx.author.mention} started a party')
+    if time[0] == "@":
+        await ctx.send(f'<@&620867662456553482> {ctx.author.mention} is playing {time}')
+    if time[0] != "@":
+        await ctx.send(f'<@&620867662456553482> {ctx.author.mention} is playing in {time}')
     await ctx.send(f'Members: {", ".join(party_members)}')
 
 @bot.command(name='join')
@@ -368,4 +372,4 @@ async def leave_party(ctx):
 
 discord_api_key = os.getenv('discord_api_key')
 
-bot.run(discord_api_key)
+bot.run("MTAwNDc4MjI0NTE5MTYxNDUwNQ.GkFw2L.cmKa3FYLxJxd3tdlN8PTWjJjQiDtBA9OC7JJOs")
