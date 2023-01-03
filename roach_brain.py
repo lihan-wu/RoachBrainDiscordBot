@@ -372,4 +372,4 @@ async def leave_party(ctx):
 
 discord_api_key = os.getenv('discord_api_key')
 
-bot.run("MTAwNDc4MjI0NTE5MTYxNDUwNQ.GkFw2L.cmKa3FYLxJxd3tdlN8PTWjJjQiDtBA9OC7JJOs")
+bot.run(discord_api_key)
