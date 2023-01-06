@@ -244,7 +244,7 @@ nl = '\n'
 bot = commands.Bot(command_prefix='$', intents=discord.Intents.all())
 
 @bot.command()
-async def recent(ctx, arg=1): # Since all players were basically the same function, we pass in the player's profile link instead of having 6x multiples of the same function
+async def recent(ctx, arg=None): # Since all players were basically the same function, we pass in the player's profile link instead of having 6x multiples of the same function
     if arg == "roach":
         link = 'https://api.opendota.com/api/players/311160163/recentMatches?api_key="3a71b2fc-46ee-4333-98f6-e5536c8b4cb5"' # profile links all in one place to make it easier to update
         get_recent_streaks(link, arg) # arg is passed in purely for the player_title string
@@ -263,7 +263,7 @@ async def recent(ctx, arg=1): # Since all players were basically the same functi
     if arg == "sullivan":
         link = 'https://api.opendota.com/api/players/61886077/recentMatches?api_key="3a71b2fc-46ee-4333-98f6-e5536c8b4cb5"'
         get_recent_streaks(link, arg)
-    if arg == 1:
+    if arg == None:
         await ctx.send(f'you must provide a player arguement to get recent match data. (e.g., $recent roach)')
         return
     embed = discord.Embed(
