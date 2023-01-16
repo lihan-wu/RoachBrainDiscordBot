@@ -8,31 +8,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-hero_data_link = 'https://api.opendota.com/api/heroStats'
-hero_data_r = requests.get(hero_data_link)
-hero_data = json.loads(hero_data_r.text)
-
-def fix_hero_data_function():
-    hero_data.insert(0, "buffer")
-    hero_data.insert(24, "buffer")
-    hero_data.insert(115, "buffer")
-    hero_data.insert(116, "buffer")
-    hero_data.insert(117, "buffer")
-    hero_data.insert(118, "buffer")
-    hero_data.insert(122, "buffer")
-    hero_data.insert(124, "buffer")
-    hero_data.insert(125, "buffer")
-    hero_data.insert(127, "buffer")
-    hero_data.insert(130, "buffer")
-    hero_data.insert(131, "buffer")
-    hero_data.insert(132, "buffer")
-    hero_data.insert(133, "buffer")
-    hero_data.insert(134, "buffer")
-
-fix_hero_data_function()
-
 game_mode_list = [
-	"Unknown",
+	"Unknown",              
 	"All Pick",
 	"Captains Mode",
 	"Random Draft",
@@ -118,38 +95,93 @@ rank_list = {
 	'85': "Immortal 5" 
 }
 
-def calc_recent_streaks(win_loss_results): # Calculate the win and loss streaks
-    index = 0
-    result_length = len(win_loss_results)
-    current_win_streak = 0
-    current_loss_streak = 0
+hero_data_link = 'https://api.opendota.com/api/heroStats'
+hero_data_r = requests.get(hero_data_link)
+hero_data = json.loads(hero_data_r.text)
 
-    # Do this twice to count the wins then the losses
-    for i in range(2):
-        if win_loss_results[index] == 1:  # If the last game played is a win
-            for game in range(index, result_length): # Count wins until you encounter a loss
-                if win_loss_results[game] == 1:
-                    current_win_streak += 1
-                    index += 1
-                else:
-                    break   # Loss encountered - Stop counting
-        else:
-            for game in range(index, result_length): # If the last game played is a loss
-                if  win_loss_results[game] == 0:           # Count losses until you encounter a win
-                    current_loss_streak += 1
-                    index += 1
-                else:
-                    break
+def get_player_data(player_data_link):
+    player_data_r = requests.get(player_data_link)
+    player_data = json.loads(player_data_r.text)
+    return player_data
 
-    return (current_win_streak, current_loss_streak) # Returning the values
+def find_hero_id(hero_data, hero):
+    for i, dic in enumerate(hero_data):
+        if dic["localized_name"] == hero:
+            return hero_data[i]["id"]
+    return -1
 
-def get_recent_streaks(link, arg):
-    r = requests.get(link)
-    data = json.loads(r.text)
+def find_hero_name(hero_id):
+    for i, dic in enumerate(hero_data):
+        if dic["id"] == hero_id:
+            return hero_data[i]["localized_name"]
+    return -1
+
+def find_hero_img(api_data, hero):
+    for i, dic in enumerate(api_data):
+        if dic["localized_name"] == hero:
+            return api_data[i]["img"]
+    return -1
+
+def find_hero_stats(hero_id, player_data):
+    hero_stats = []
+    for i, dic in enumerate(player_data):
+        if dic["hero_id"] == str(hero_id):
+            hero_stats.append(player_data[i]["last_played"])
+            hero_stats.append(player_data[i]["games"])
+            hero_stats.append(player_data[i]["win"])
+            hero_stats.append(player_data[i]["with_games"])
+            hero_stats.append(player_data[i]["with_win"])
+            hero_stats.append(player_data[i]["against_games"])
+            hero_stats.append(player_data[i]["against_win"])
+            return hero_stats
+    return -1
+
+def find_recent_match_data(player_data):
+
+    recent_match_data = []
+
+    for i in player_data[0:1]:
+        recent_match_data.append(i['match_id'])     #0  
+        recent_match_data.append(i['player_slot'])  #1
+        recent_match_data.append(i['radiant_win'])  #2
+        recent_match_data.append(i['duration'])     #3
+        recent_match_data.append(i['game_mode'])    #4
+        recent_match_data.append(i['lobby_type'])   #5
+        recent_match_data.append(i['hero_id'])      #6      
+        recent_match_data.append(i['start_time'])   #7
+        recent_match_data.append(i['version'])      #8
+        recent_match_data.append(i['kills'])        #9
+        recent_match_data.append(i['deaths'])       #10
+        recent_match_data.append(i['assists'])      #11
+        recent_match_data.append(i['skill'])        #12
+        recent_match_data.append(i['average_rank']) #13
+        recent_match_data.append(i['xp_per_min'])   #14
+        recent_match_data.append(i['gold_per_min']) #15
+        recent_match_data.append(i['hero_damage'])  #16
+        recent_match_data.append(i['tower_damage']) #17
+        recent_match_data.append(i['hero_healing']) #18
+        recent_match_data.append(i['last_hits'])    #19
+        recent_match_data.append(i['lane'])         #20
+        recent_match_data.append(i['lane_role'])    #21
+        recent_match_data.append(i['is_roaming'])   #22
+        recent_match_data.append(i['cluster'])      #23
+        recent_match_data.append(i['leaver_status'])#24
+        recent_match_data.append(i['party_size'])   #25
+        recent_match_data.append(find_hero_name(recent_match_data[6])) #26
+        return recent_match_data
+
+def calculate_percentage(num1, num2):
+    if num2 == 0:
+        return 0
+    if num1 == 0:
+        return "no data"
+    return round(num1 / num2 * 100, 1)
+
+def get_recent_streaks(recent_match_data):
 
     win_loss_result = [] 
 
-    for d in data:   # Compile the win/loss in a list (might be able to simplify this)
+    for d in recent_match_data:   # Compile the win/loss in a list (might be able to simplify this)
         if (d["player_slot"] <= 5) and (d["radiant_win"] == True):
             win = 1
             win_loss_result.append(win)
@@ -160,139 +192,173 @@ def get_recent_streaks(link, arg):
             loss = 0
             win_loss_result.append(loss)
 
-    streaks = calc_recent_streaks(win_loss_result)  # index 0 = wins, 1 = losses
+    return win_loss_result
 
-    global streak_type
-    global last_match_result
-    global current_streak
+def calculate_recent_streaks(win_loss_results): # Calculate the win and loss streaks
+    index = 0
+    result_length = len(win_loss_results)
+    current_win_streak = 0
+    current_loss_streak = 0
 
-    if win_loss_result[0] == 0:
-        current_streak = streaks[1]
-        streak_type = ("Current lose streak")
-        last_match_result = ("Lost Match")
-    else:
-        current_streak = streaks[0]
-        streak_type = ("Current Win streak")
-        last_match_result = ("Won Match")
+    # Do this twice to count the wins then the losses
+    for i in range(1):
+        if win_loss_results[index] == 1:  # If the last game played is a win
+            for game in range(index, result_length): # Count wins until you encounter a loss
+                if win_loss_results[game] == 1:
+                    current_win_streak += 1
+                    index += 1
+                else:
+                    break   # Loss encountered - Stop counting
+        else:
+            for game in range(index, result_length): # If the last game played is a loss
+                if  win_loss_results[game] == 0:     # Count losses until you encounter a win
+                    current_loss_streak += 1
+                    index += 1
+                else:
+                    break
 
-    global match_id
-    global duration
-    global start_time_formatted
-    global lobby_type
-    global tower_damage
-    global hero_id
-    global kills
-    global deaths
-    global assists
-    global average_rank
-    global gold_per_min
-    global last_hits
-    global hero_damage
-    global hero_healing
-    global game_mode
-    global last_hero_id
-    global last_game_mode
-    global last_lobby_type
-    global duration_formatted
-    global rank_formatted
-    global match_link
-    global player_title
+    return (current_win_streak, current_loss_streak) # Returning the values
 
-    for match in data[0:1]:
-        match_id = (match['match_id'])
-        duration = (match['duration'])
-        start_time = (match['start_time'])
-        lobby_type = (match['lobby_type'])
-        tower_damage = (match['tower_damage'])
-        hero_id = (match['hero_id'])
-        kills = (match['kills'])
-        deaths = (match['deaths'])
-        assists = (match['assists'])
-        average_rank = (match['average_rank'])
-        gold_per_min = (match['gold_per_min'])
-        last_hits = (match['last_hits'])
-        hero_damage = (match['hero_damage'])
-        hero_healing = (match['hero_healing'])
-        game_mode = (match['game_mode'])
-        
-    global current_winrate
+def find_winrate(win_loss_results):
     current_winrate = 0
-    for w in win_loss_result:
+    for w in win_loss_results:
         if w == 1:
             current_winrate = current_winrate + 5
+    return current_winrate
 
-    hd = hero_data[hero_id]['img']
-    last_hero_id = 'https://api.opendota.com' + hd
-
-    last_game_mode = game_mode_list[game_mode]
-    last_lobby_type = lobby_type_list[lobby_type]
-
-    duration_formatted = str(datetime.timedelta(seconds=(duration)))
-
-    start_time_tz_est = datetime.datetime.fromtimestamp(start_time, datetime.timezone(datetime.timedelta(hours=-4)))
-    start_time_formatted = start_time_tz_est.strftime('%B %d, %I:%M %p')
-
-    rank_formatted = rank_list[str(average_rank)]
-
-    match_link = "https://www.dotabuff.com/matches/" + str(match_id)
-
-    arg = arg.capitalize() # Captialize the first character of the name / command
-    player_title = f"{arg}'s most recent match"
-
-nl = '\n'
 
 bot = commands.Bot(command_prefix='$', intents=discord.Intents.all())
 
-@bot.command()
-async def recent(ctx, arg=None): # Since all players were basically the same function, we pass in the player's profile link instead of having 6x multiples of the same function
-    if arg == "roach":
-        link = 'https://api.opendota.com/api/players/311160163/recentMatches?api_key="3a71b2fc-46ee-4333-98f6-e5536c8b4cb5"' # profile links all in one place to make it easier to update
-        get_recent_streaks(link, arg) # arg is passed in purely for the player_title string
-    if arg == "zech":
-        link = 'https://api.opendota.com/api/players/67380505/recentMatches?api_key="3a71b2fc-46ee-4333-98f6-e5536c8b4cb5"'
-        get_recent_streaks(link, arg)
-    if arg == "daniel":
-        link = 'https://api.opendota.com/api/players/28407285/recentMatches?api_key="3a71b2fc-46ee-4333-98f6-e5536c8b4cb5"'
-        get_recent_streaks(link, arg)
-    if arg == "luke":
-        link = 'https://api.opendota.com/api/players/46668454/recentMatches?api_key="3a71b2fc-46ee-4333-98f6-e5536c8b4cb5"'
-        get_recent_streaks(link, arg)
-    if arg == "david":
-        link = 'https://api.opendota.com/api/players/38754201/recentMatches?api_key="3a71b2fc-46ee-4333-98f6-e5536c8b4cb5"'
-        get_recent_streaks(link, arg)
-    if arg == "sullivan":
-        link = 'https://api.opendota.com/api/players/61886077/recentMatches?api_key="3a71b2fc-46ee-4333-98f6-e5536c8b4cb5"'
-        get_recent_streaks(link, arg)
-    if arg == None:
-        await ctx.send(f'you must provide a player arguement to get recent match data. (e.g., $recent roach)')
-        return
+@bot.command(name='herostats')
+# the additioanl arguements are here for heros that have more than one word in their name
+async def send_hero_stats(ctx, player, hero=None, string_arg1='', string_arg2='', string_arg3=''):
+    if player == "daniel":
+        link = "https://api.opendota.com/api/players/28407285/heroes"
+    if player == "zech":
+        link = "https://api.opendota.com/api/players/67380505/heroes"
+    if player == "luke":
+        link = "https://api.opendota.com/api/players/46668454/heroes"
+    if player == "david":
+        link = "https://api.opendota.com/api/players/38754201/heroes"
+    if player == "sullivan":
+        link = "https://api.opendota.com/api/players/61886077/heroes"
+    if player == "roach":
+        link = "https://api.opendota.com/api/players/311160163/heroes"
+    if string_arg3 != '':
+        hero = hero.capitalize() + ' ' + string_arg1.lower() + ' ' + string_arg2.lower() + ' ' +string_arg3.capitalize()
+    elif string_arg2 != '':
+        hero = hero.capitalize() + ' ' + string_arg1.lower() + ' ' + string_arg2.capitalize()  
+    elif string_arg1 != '':
+        hero = hero.capitalize() + ' ' + string_arg1.capitalize()
+    elif string_arg1 == '':
+        hero = hero.capitalize()
+
+    stats = find_hero_stats(find_hero_id(hero_data, hero), get_player_data(link))
+
+    if stats[0] == 0:
+        last_played = "Never"
+    else:
+        last_played = datetime.datetime.fromtimestamp(stats[0]).strftime("%B %d %Y")
+
     embed = discord.Embed(
-        title=player_title,
-        url=match_link,
+        title= f'{player.capitalize()}\'s stats with {hero}',
+        color=discord.Colour.dark_magenta()
+    )
+
+    embed.set_thumbnail(
+        url=('https://api.opendota.com' + find_hero_img(hero_data, hero))
+    )
+
+    embed.add_field(
+        name="Stats",
+        value=f'Last played: {last_played}\n\n'
+              f'Games played as: {stats[1]}\n'
+              f'Win percentage as: {calculate_percentage(stats[2],stats[1])}\n\n'
+              f'Games played with: {stats[3]}\n'
+              f'Win percentage with: {calculate_percentage(stats[4], stats[3])}\n\n'
+              f'Games played against: {stats[5]}\n'
+              f'Win percentage against: {calculate_percentage(stats[6], stats[5])}'
+    )
+
+    await ctx.send(embed=embed)
+
+
+@bot.command(name='recent')
+async def send_recent_match(ctx, player):
+    if player == "daniel":
+        link = "https://api.opendota.com/api/players/28407285/recentMatches"
+    if player == "zech":
+        link = "https://api.opendota.com/api/players/67380505/recentMatches"
+    if player == "luke":
+        link = "https://api.opendota.com/api/players/46668454/recentMatches"
+    if player == "david":
+        link = "https://api.opendota.com/api/players/38754201/recentMatches"
+    if player == "sullivan":
+        link = "https://api.opendota.com/api/players/61886077/recentMatches"
+    if player == "roach":
+        link = "https://api.opendota.com/api/players/311160163/recentMatches"
+    if player == "test":
+        link = "https://api.opendota.com/api/players/136241973/recentMatches"
+    
+    player_data = get_player_data(link)
+    last_match_stats = find_recent_match_data(player_data)
+    hero = last_match_stats[26]
+    match_end_time = datetime.datetime.fromtimestamp(last_match_stats[7]).strftime('%B %d, %I:%M %p')
+    match_duration = str(datetime.timedelta(seconds=(last_match_stats[3])))
+    recent_streak = get_recent_streaks(player_data)
+    winrate = find_winrate(recent_streak)
+    calculated_streak = calculate_recent_streaks(recent_streak)
+
+    if calculated_streak[0] > 0:
+        streak_type = "Win"
+        streak_length = calculated_streak[0]
+    else:
+        streak_type = "Lose"
+        streak_length = calculated_streak[1]
+
+
+    embed = discord.Embed(
+        title= f'{player.capitalize()}\'s most recent match',
+        url='https://www.dotabuff.com/matches/' + str(last_match_stats[0]),
         color=discord.Colour.dark_gold()
     )
 
-    embed.set_thumbnail(url=(last_hero_id))
+    embed.set_thumbnail(url=('https://api.opendota.com' + find_hero_img(hero_data, hero)))
     embed.add_field(
         name='Result',
-        value=(last_match_result),
+        value=(streak_type), # <-- win/loss of last match
         inline=False
-    )        
+    )
+
     embed.add_field(
         name='Stats',
-        value=f' Kills: {kills} {nl} Deaths: {deaths} {nl} Assists: {assists} {nl} GPM: {gold_per_min} {nl} Last hits: {last_hits} {nl} Hero damage: {hero_damage} {nl} Hero healing: {hero_healing} {nl} Building damage: {tower_damage}',
+        value=f'Kills: {last_match_stats[9]}\n'
+              f'Deaths: {last_match_stats[10]}\n'
+              f'Assists: {last_match_stats[11]}\n'
+              f'GPM: {last_match_stats[15]}\n'
+              f'Last hits: {last_match_stats[19]}\n'
+              f'Hero damage: {last_match_stats[16]}\n'
+              f'Hero healing: {last_match_stats[18]}\n'
+              f'Building damage: {last_match_stats[17]}\n',
         inline=True
     )
     embed.add_field(
         name='Match info',
-        value=f'Match ID: {match_id} {nl} End time (EST): {start_time_formatted} {nl}  Gamemode: {last_game_mode} {nl} Match type: {last_lobby_type} {nl} Duration: {duration_formatted} {nl} Average rank: {rank_formatted} {nl} ',
+        value=f'Match ID: {last_match_stats[0]}\n'
+              f'End time (EST): {match_end_time}\n'
+              f'Gamemode: {game_mode_list[last_match_stats[4]]}\n'
+              f'Match type: {lobby_type_list[last_match_stats[5]]}\n'
+              f'Duration: {match_duration}\n'
+              f'Average rank: {rank_list[str(last_match_stats[13])]}\n'
+              f'Party size: {last_match_stats[25]}\n',
         inline=True
-    )   
+    )
     embed.add_field(
         name=' --- ',
-        value=f'{streak_type}: {current_streak} {nl} {current_winrate} percent win rate over the last 20 games',
+        value=f'Current {streak_type} streak: {streak_length}\n'
+              f'{winrate} percent win rate over the last 20 games',
         inline=False
-    )   
+    )
 
     await ctx.send(embed=embed)
 
@@ -369,7 +435,6 @@ async def leave_party(ctx):
         await ctx.send(f'party is empty. you can start one with the $party command')
         return
 
-
 discord_api_key = os.getenv('discord_api_key')
 
-bot.run(discord_api_key)
+bot.run("MTAwNDc4MjI0NTE5MTYxNDUwNQ.GtRDuw.I4XlL2jTlOC4zk3xbZmWuys_WUyyqBRXE-EmDI")
