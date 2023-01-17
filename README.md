@@ -11,6 +11,15 @@ returns information about the most recent match of the specified player. must be
  
 Example: $recent roach
 
+ 
+### Hero stats ###
+ 
+$herostats <playername> <heroname>
+returns a players lifetime stats with a specific hero. hero names can be sent with spaces 
+ 
+Example: $herostats roach tidehunter
+         $herostats luke spirit breaker
+ 
 ### Party commands ###
 
 $party
