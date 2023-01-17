@@ -374,9 +374,9 @@ async def create_party(ctx, time=None, gamemode=None):
     party_members.append(ctx.author.display_name)
     if time == None:
         await ctx.send(f'<@&620867662456553482> {ctx.author.mention} started a party')
-    if time[0] == "@":
+    elif time[0] == "@":
         await ctx.send(f'<@&620867662456553482> {ctx.author.mention} is playing {time}')
-    if time[0] != "@":
+    elif time[0] != "@":
         await ctx.send(f'<@&620867662456553482> {ctx.author.mention} is playing in {time}')
     await ctx.send(f'Members: {", ".join(party_members)}')
 
