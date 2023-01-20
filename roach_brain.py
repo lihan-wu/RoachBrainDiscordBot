@@ -200,7 +200,6 @@ def calculate_recent_streaks(win_loss_results): # Calculate the win and loss str
     current_win_streak = 0
     current_loss_streak = 0
 
-    # Do this twice to count the wins then the losses
     for i in range(1):
         if win_loss_results[index] == 1:  # If the last game played is a win
             for game in range(index, result_length): # Count wins until you encounter a loss
@@ -262,7 +261,7 @@ async def send_hero_stats(ctx, player, hero=None, string_arg1='', string_arg2=''
 
     embed = discord.Embed(
         title= f'{player.capitalize()}\'s stats with {hero}',
-        color=discord.Colour.dark_magenta()
+        color=discord.Colour.dark_green()
     )
 
     embed.set_thumbnail(
@@ -303,7 +302,7 @@ async def send_recent_match(ctx, player):
     player_data = get_player_data(link)
     last_match_stats = find_recent_match_data(player_data)
     hero = last_match_stats[26]
-    match_end_time = datetime.datetime.fromtimestamp(last_match_stats[7]).strftime('%B %d, %I:%M %p')
+    match_end_time = datetime.datetime.fromtimestamp(last_match_stats[7], datetime.timezone(datetime.timedelta(hours=-4))).strftime('%B %d, %I:%M %p')
     match_duration = str(datetime.timedelta(seconds=(last_match_stats[3])))
     recent_streak = get_recent_streaks(player_data)
     winrate = find_winrate(recent_streak)
@@ -313,7 +312,7 @@ async def send_recent_match(ctx, player):
         streak_type = "Win"
         streak_length = calculated_streak[0]
     else:
-        streak_type = "Lose"
+        streak_type = "Loss"
         streak_length = calculated_streak[1]
 
 
@@ -345,7 +344,7 @@ async def send_recent_match(ctx, player):
     embed.add_field(
         name='Match info',
         value=f'Match ID: {last_match_stats[0]}\n'
-              f'End time (EST): {match_end_time}\n'
+              f'Start time (EST): {match_end_time}\n'
               f'Gamemode: {game_mode_list[last_match_stats[4]]}\n'
               f'Match type: {lobby_type_list[last_match_stats[5]]}\n'
               f'Duration: {match_duration}\n'
