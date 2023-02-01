@@ -296,8 +296,8 @@ async def send_recent_match(ctx, player):
         link = "https://api.opendota.com/api/players/61886077/recentMatches"
     if player == "roach":
         link = "https://api.opendota.com/api/players/311160163/recentMatches"
-    if player == "test":
-        link = "https://api.opendota.com/api/players/136241973/recentMatches"
+    if player == int:
+        link = "https://api.opendota.com/api/players/" + player + "/recentMatches"
     
     player_data = get_player_data(link)
     last_match_stats = find_recent_match_data(player_data)
