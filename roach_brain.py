@@ -344,7 +344,7 @@ async def send_recent_match(ctx, player):
     embed.add_field(
         name='Match info',
         value=f'Match ID: {last_match_stats[0]}\n'
-              f'Start time (EST): {match_end_time}\n'
+              f'End time (EST): {match_end_time}\n'
               f'Gamemode: {game_mode_list[last_match_stats[4]]}\n'
               f'Match type: {lobby_type_list[last_match_stats[5]]}\n'
               f'Duration: {match_duration}\n'
