@@ -2,6 +2,8 @@ import discord
 import requests
 import json
 import datetime
+import feedparser
+import re
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
@@ -99,10 +101,29 @@ hero_data_link = 'https://api.opendota.com/api/heroStats'
 hero_data_r = requests.get(hero_data_link)
 hero_data = json.loads(hero_data_r.text)
 
+CLEANR = re.compile('<.*?>') 
+
+def cleanhtml(raw_html):
+  cleantext = re.sub(CLEANR, '', raw_html)
+  return cleantext
+
 def get_player_data(player_data_link):
     player_data_r = requests.get(player_data_link)
     player_data = json.loads(player_data_r.text)
     return player_data
+
+def get_news_feed(url):
+    news_data = []
+    news_feed = feedparser.parse(url)
+    entry = news_feed.entries[0]
+    news_data.append(entry.title)
+    news_data.append(entry.links[0]["href"])
+    news_data.append(entry.links[1]["href"])   
+    cleaned_summary = cleanhtml(entry.summary)
+    cleaned_summary_trunc = (cleaned_summary[:1000] + '...') if len(cleaned_summary) > 1000 else cleaned_summary
+    news_data.append(cleaned_summary_trunc)
+    news_data.append(entry.published)
+    return news_data
 
 def find_hero_id(hero_data, hero):
     for i, dic in enumerate(hero_data):
@@ -431,6 +452,27 @@ async def leave_party(ctx):
     if len(party_members) == 0:
         await ctx.send(f'party is empty. you can start one with the $party command')
         return
+    
+
+@bot.command(name='news')
+async def send_news(ctx):
+
+    post_data = get_news_feed('https://store.steampowered.com/feeds/news/app/570/?cc=US&l=english')
+    embed = discord.Embed(
+        title=post_data[0],
+        url=post_data[1],
+        color=discord.Colour.greyple()
+    )
+
+    embed.set_thumbnail(url=post_data[2])
+    embed.add_field(
+        name=post_data[4],
+        value=post_data[3],
+        inline=False
+    )
+
+    await ctx.send(embed=embed)
+
 
 discord_api_key = os.getenv('discord_api_key')
 
