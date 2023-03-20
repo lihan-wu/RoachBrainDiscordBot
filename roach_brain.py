@@ -118,7 +118,10 @@ def get_news_feed(url):
     entry = news_feed.entries[0]
     news_data.append(entry.title)
     news_data.append(entry.links[0]["href"])
-    news_data.append(entry.links[1]["href"])   
+    try:
+        news_data.append(entry.links[1]["href"])
+    except:
+        news_data.append(None) 
     cleaned_summary = cleanhtml(entry.summary)
     cleaned_summary_trunc = (cleaned_summary[:1000] + '...') if len(cleaned_summary) > 1000 else cleaned_summary
     news_data.append(cleaned_summary_trunc)
@@ -476,4 +479,4 @@ async def send_news(ctx):
 
 discord_api_key = os.getenv('discord_api_key')
 
-bot.run(discord_api_key)
+bot.run("MTAwNDc4MjI0NTE5MTYxNDUwNQ.Gq3XpA.USGTbLwwx2AcT8x5514nOJudnB6fySwq7NlIZY")
