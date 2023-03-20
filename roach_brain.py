@@ -479,4 +479,4 @@ async def send_news(ctx):
 
 discord_api_key = os.getenv('discord_api_key')
 
-bot.run("MTAwNDc4MjI0NTE5MTYxNDUwNQ.Gq3XpA.USGTbLwwx2AcT8x5514nOJudnB6fySwq7NlIZY")
+bot.run(discord_api_key)
