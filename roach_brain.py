@@ -376,7 +376,7 @@ async def send_recent_match(ctx, player):
     )
     embed.add_field(
         name=' --- ',
-        value=f'Current {streak_type} streak: {streak_length}\n'
+        value=f'Current {streak_type.lower()} streak: {streak_length}\n'
               f'{winrate} percent win rate over the last 20 games',
         inline=False
     )
