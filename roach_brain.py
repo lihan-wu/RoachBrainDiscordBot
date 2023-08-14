@@ -460,6 +460,7 @@ async def leave_party(ctx):
 @bot.command(name='news')
 async def send_news(ctx):
 
+    # call the RSS feed and send it in the requested channel
     post_data = get_news_feed('https://store.steampowered.com/feeds/news/app/570/?cc=US&l=english')
     embed = discord.Embed(
         title=post_data[0],
