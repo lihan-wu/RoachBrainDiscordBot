@@ -477,6 +477,18 @@ async def send_news(ctx):
     await ctx.send(embed=embed)
 
 
+@bot.command(name='help')
+async def send_help(ctx):
+    await ctx.send(f'Commands: \n'
+                   f'$recent <player_name> - returns information about the most recent match of the specified player. must be sent as all lowercase \n'
+                   f'$herostats <player_name> <hero> -  returns a players lifetime stats with a specific hero. hero names can be sent with spaces \n'
+                   f'$party - creates a party and adds the caller to the party optional: can pass in an arguement to display when you are going to play. arguement must be entered without spaces (example: $party 30min OR $party @7pm) \n'
+                   f'$join - adds the callers name to the party list \n'
+                   f'$leave removes the callers name from the party list')
+    return
+
+
+
 discord_api_key = os.getenv('discord_api_key')
 
 bot.run(discord_api_key)
