@@ -149,7 +149,7 @@ def find_hero_img(api_data, hero):
 def find_hero_stats(hero_id, player_data):
     hero_stats = []
     for i, dic in enumerate(player_data):
-        if dic["hero_id"] == str(hero_id):
+        if dic["hero_id"] == hero_id:
             hero_stats.append(player_data[i]["last_played"])
             hero_stats.append(player_data[i]["games"])
             hero_stats.append(player_data[i]["win"])
@@ -478,7 +478,7 @@ async def send_news(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command(name='help')
+@bot.command(name='commands')
 async def send_help(ctx):
     await ctx.send(f'Commands: \n'
                    f'$recent <player_name> - returns information about the most recent match of the specified player. must be sent as all lowercase \n'
@@ -486,10 +486,9 @@ async def send_help(ctx):
                    f'$party - creates a party and adds the caller to the party optional: can pass in an arguement to display when you are going to play. arguement must be entered without spaces (example: $party 30min OR $party @7pm) \n'
                    f'$join - adds the callers name to the party list \n'
                    f'$leave removes the callers name from the party list')
-    return
 
 
 
 discord_api_key = os.getenv('discord_api_key')
 
-bot.run(discord_api_key)
+bot.run('MTAwNDc4MjI0NTE5MTYxNDUwNQ.G4i1qv.MJac6m9XQuazkKe-tNCIiktq5x9xoN6W-cBLPs')
