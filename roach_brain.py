@@ -491,4 +491,4 @@ async def send_help(ctx):
 
 discord_api_key = os.getenv('discord_api_key')
 
-bot.run('MTAwNDc4MjI0NTE5MTYxNDUwNQ.G4i1qv.MJac6m9XQuazkKe-tNCIiktq5x9xoN6W-cBLPs')
+bot.run(discord_api_key)
