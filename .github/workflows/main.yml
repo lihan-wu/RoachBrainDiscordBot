@@ -1,51 +1,39 @@
 name: push-to-production
 
-on: 
+on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 jobs:
-  checkout-and-build:
+  checkout:
     runs-on: self-hosted
     steps:
-      
       - name: checkout
         uses: actions/checkout@v3
 
-      - name: login to docker hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-        
-      - name: setup docker buildx
-        uses: docker/setup-buildx-action@v2
+      - name: create-env-file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
 
-      - name: build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile
-          push: True
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/docker_repo:latest
-  pull-and-run :
-    needs: checkout-and-build
+  stop-containers:
+    needs: checkout
     runs-on: self-hosted
     steps:
-    
-      - name: login to docker hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          
-      - name: pull
-        run: docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/docker_repo:latest
+      - name: docker-compose-down
+        run: docker-compose down
 
-      - name: stop-containers
-        run: docker stop $(docker ps -a -q)
-      
-      - name: run
-        run: docker run -d -p 80:80 -e discord_api_key=${{ secrets.DISCORD_BOT_API_KEY }} lihanwu/docker_repo:latest
+  build:
+    needs: stop-containers
+    runs-on: self-hosted
+    steps:
+      - name: docker-compose-build
+        run: docker-compose build -f ./docker-compose.yml build
+
+  launch:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: docker-compose up
+        run: docker-compose -f ./docker-compose.yml up -d

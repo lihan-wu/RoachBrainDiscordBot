@@ -489,6 +489,4 @@ async def send_help(ctx):
 
 
 
-discord_api_key = os.getenv('discord_api_key')
-
-bot.run(discord_api_key)
+bot.run(os.getenv('SECRET_KEY'))

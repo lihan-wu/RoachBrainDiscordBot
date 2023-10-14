@@ -1,12 +1,19 @@
-FROM python:alpine3.17
+FROM python:3.10-alpine
 
-COPY . .
+COPY ./requirements.txt /requirements.txt
+COPY ./app /app
 
-RUN /py/bin/pip install --upgrade pip
-RUN python3 -m pip install -U discord.py
-RUN python3 -m pip install -U requests
-RUN python3 -m pip install -U python-dotenv
-RUN python3 -m pip install -U feedparser
+
+WORKDIR /app
+EXPOSE 80
+
+RUN python -m venv /py && \
+    apk update && \
+    apk add --no-cache py-pip && \
+    pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r /requirements.txt
+
+
 
 
 CMD ["python", "./roach_brain.py", "--host=0.0.0.0:"]

@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  roachbrain:
+    build:
+      context: .
+    command: >
+      sh -c "python roach_brain.py --host=0.0.0.0:"
+    ports:
+      - 80:80
+
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+
