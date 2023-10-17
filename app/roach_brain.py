@@ -334,7 +334,7 @@ async def send_recent_match(ctx, player):
         streak_type = "Win"
         streak_length = calculated_streak[0]
     else:
-        streak_type = "Loss"
+        streak_type = "Lose"
         streak_length = calculated_streak[1]
 
 
