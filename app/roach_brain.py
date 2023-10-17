@@ -390,7 +390,6 @@ party_members = []
 @bot.command(name='party')
 async def create_party(ctx, time=None, gamemode=None):
 
-    # clears the party and adds the caller to the party
     party_members.clear()
     party_members.append(ctx.author.display_name)
     if time == None:
@@ -404,31 +403,22 @@ async def create_party(ctx, time=None, gamemode=None):
 @bot.command(name='join')
 async def join_party(ctx):
 
-    # check if user is in the party and sends an error if they are
     if ctx.author.display_name in party_members:
         await ctx.send(f'{ctx.author.mention} is already in the party')
         return
 
-
-    # if ther is no party, send an error
     if len(party_members) == 0:
         await ctx.send(f'{ctx.author.mention} no party has been started. you can start a party with the $party command')
         return
-
-
-    # if the party is full, send an error message 
+ 
     if len(party_members) == 5:
         await ctx.send(f'party is full.')
         await ctx.send(f'Members: {", ".join(party_members)}')
         return
 
-
-    # add member to the party and send a message
     party_members.append(ctx.author.display_name)
     await ctx.send(f'{ctx.author.mention} joined the party')
 
-
-    # some various messages at certain party sizes
     if len(party_members) == 4:
         await ctx.send(f'<@&620867662456553482> need one more for a five stack')
 
@@ -436,7 +426,7 @@ async def join_party(ctx):
         await ctx.send(f'five stack time let\'s go. don\'t let luke random')
 
 
-    # print the names of all members in the party
+
     await ctx.send(f'Members: {", ".join(party_members)}')
 
 
@@ -444,14 +434,12 @@ async def join_party(ctx):
 @bot.command(name='leave')
 async def leave_party(ctx):
 
-    # find the party that the user is a member of
     if ctx.author.display_name in party_members:
         party_members.remove(ctx.author.display_name)
         await ctx.send(f'{ctx.author.mention} left the party')
         await ctx.send(f'Members: {", ".join(party_members)}')
         
 
-    # if the user is not a member of any party, send an error message
     if len(party_members) == 0:
         await ctx.send(f'party is empty. you can start one with the $party command')
         return
@@ -460,7 +448,6 @@ async def leave_party(ctx):
 @bot.command(name='news')
 async def send_news(ctx):
 
-    # call the RSS feed and send it in the requested channel
     post_data = get_news_feed('https://store.steampowered.com/feeds/news/app/570/?cc=US&l=english')
     embed = discord.Embed(
         title=post_data[0],
