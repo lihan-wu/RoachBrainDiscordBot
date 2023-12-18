@@ -363,7 +363,7 @@ async def send_recent_match(ctx, player):
 
     player_data = get_player_data(link)
     last_match_stats = find_recent_match_data(player_data)
-    hero = last_match_stats[26]
+    hero = last_match_stats[25]
     match_end_time = datetime.datetime.fromtimestamp(
         last_match_stats[7], datetime.timezone(datetime.timedelta(hours=-4))
     ).strftime("%B %d, %I:%M %p")
@@ -397,11 +397,11 @@ async def send_recent_match(ctx, player):
         value=f"Kills: {last_match_stats[9]}\n"
         f"Deaths: {last_match_stats[10]}\n"
         f"Assists: {last_match_stats[11]}\n"
-        f"GPM: {last_match_stats[15]}\n"
-        f"Last hits: {last_match_stats[19]}\n"
-        f"Hero damage: {last_match_stats[16]}\n"
-        f"Hero healing: {last_match_stats[18]}\n"
-        f"Building damage: {last_match_stats[17]}\n",
+        f"GPM: {last_match_stats[14]}\n"
+        f"Last hits: {last_match_stats[18]}\n"
+        f"Hero damage: {last_match_stats[15]}\n"
+        f"Hero healing: {last_match_stats[17]}\n"
+        f"Building damage: {last_match_stats[16]}\n",
         inline=True,
     )
     embed.add_field(
@@ -411,8 +411,8 @@ async def send_recent_match(ctx, player):
         f"Gamemode: {game_mode_list[last_match_stats[4]]}\n"
         f"Match type: {lobby_type_list[last_match_stats[5]]}\n"
         f"Duration: {match_duration}\n"
-        f"Average rank: {rank_list[str(last_match_stats[13])]}\n"
-        f"Party size: {last_match_stats[25]}\n",
+        f"Average rank: {rank_list[str(last_match_stats[12])]}\n"
+        f"Party size: {last_match_stats[24]}\n",
         inline=True,
     )
     embed.add_field(
