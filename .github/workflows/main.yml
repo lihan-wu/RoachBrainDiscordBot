@@ -29,7 +29,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: docker-compose-build
-        run: docker-compose build -f ./docker-compose.yml build
+        run: docker-compose -f ./docker-compose.yml build
 
   launch:
     needs: build
