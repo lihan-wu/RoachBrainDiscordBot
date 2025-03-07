@@ -42,7 +42,7 @@ close_bot_thread = threading.Thread(target=close_bot)
 
 close_bot_thread.start()
 
-post_data = get_news_feed('https://store.steampowered.com/feeds/news/app/570/?cc=US&l=english')
+post_data = get_news_feed('https://store.steampowered.com/feeds/news/app/1422450/?cc=US&l=english')
 
 bot = commands.Bot(command_prefix='$', intents=discord.Intents.all())
 
@@ -71,7 +71,7 @@ async def on_ready():
         previous_post = open('./previous_post.txt', "w")
         previous_post.write(post_data[0])
 
-        await channel.send(f'<@&620867662456553482> {post_data[0]}')
+        await channel.send(f'<@&1254645811225165916> {post_data[0]}')
         await channel.send(embed=embed)
     
 
