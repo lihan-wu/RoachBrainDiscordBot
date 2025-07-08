@@ -488,7 +488,7 @@ async def leave_party(ctx):
 @bot.command(name="news")
 async def send_news(ctx):
     post_data = get_news_feed(
-        "https://store.steampowered.com/feeds/news/app/570/?cc=US&l=english"
+        "https://store.steampowered.com/feeds/news/app/1422450?cc=US&l=english"
     )
     embed = discord.Embed(
         title=post_data[0], url=post_data[1], color=discord.Colour.greyple()
